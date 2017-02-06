@@ -1,0 +1,17 @@
+version: '2'
+services:
+    hashfu-mongodb:
+        container_name: hashfu-mongodb
+        image: mongo:3.2.10
+        ports:
+            - "27017:27017"
+        command: mongos --configdb hashfu-mongodb-config
+    hashfu-mongodb-node:
+        build:
+            context: .
+            dockerfile: mongodb/MongoDB.Dockerfile
+        command: mongod --replSet rs1 --noprealloc --smallfiles
+    hashfu-mongodb-config:
+        image: mongo:3.2.10
+        container_name: hashfu-mongodb-config
+        command: mongod --noprealloc --smallfiles --configsvr --dbpath /data/db

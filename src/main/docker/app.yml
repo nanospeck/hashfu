@@ -1,0 +1,31 @@
+version: '2'
+services:
+    hashfu-app:
+        image: hashfu
+        external_links:
+            - hashfu-mongodb:mongodb
+            - kafka:kafka
+            - zookeeper:zookeeper
+        environment:
+            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017
+            - SPRING_DATA_MONGODB_DATABASE=hashfu
+            - JHIPSTER_SLEEP=10 # gives time for the database to boot before the application
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka
+            - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZK_NODES=zookeeper
+        ports:
+            - 8080:8080
+    hashfu-mongodb:
+        extends:
+            file: mongodb.yml
+            service: hashfu-mongodb
+    kafka:
+        extends:
+            file: kafka.yml
+            service: kafka
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka
+    zookeeper:
+        extends:
+            file: kafka.yml
+            service: zookeeper
